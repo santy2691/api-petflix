@@ -1,0 +1,47 @@
+type Movie {
+    id: ID!
+    title: String!
+    data_premiere: String!
+    sinopsis: String!
+    duration: String!
+    type: String!
+    urlFile: String!
+    imagen: String!
+    season: Int!
+    chapter: Int!
+    genres: [Genre!]! @belongsToMany
+    
+}
+
+
+extend type Query {
+    movie(id: ID!): Movie @find @guard
+    
+    movies: [Movie!]! @all @guard
+    
+    movieForTitle(title: String! @where(operator: "like")) : [Movie!]! 
+        @guard
+        @can(ability: "isAdmin") 
+        @all 
+}
+
+extend type Mutation  {
+    updateMovie(id: ID!, 
+            title: String, 
+            sinopsis: String, 
+            duration: String, 
+            type: String, 
+            urlFile: String, 
+            imagen: String, 
+            season: Int, 
+            chapter: Int): Movie 
+        @guard 
+        @can(ability: "isAdmin") 
+        @field(resolver: "MovieMutation@setMovie")
+    
+    deleteMovie(id: ID!): Movie 
+        @guard
+        @can(ability: "isAdmin")
+        @delete 
+
+}

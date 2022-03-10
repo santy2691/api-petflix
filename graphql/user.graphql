@@ -1,0 +1,36 @@
+type User {
+  id: ID!
+  name: String!
+  lastName: String!
+  email: String!
+}
+
+type UserAdmin  @model(class: "\\App\\Models\\User") {
+    id: ID!
+  name: String!
+  lastName: String!
+  email: String!
+  admin: Boolean!
+}
+
+extend type Query {
+  user(id: ID! @eq): UserAdmin @find @guard @can(ability: "isAdmin")
+  users: [User!]! @all
+}
+
+extend type Mutation {
+  createUser(name: String!, lastName: String!,email: String!, password: String!, admin: Boolean!): User 
+        @create 
+  
+  login(email: String!, password: String!): String 
+        @field(resolver: "Login")
+  
+  updateMyUser(name: String, lastName: String, password: String): User 
+        @guard 
+        @field(resolver: "UserGraph@updateMyUser")
+  
+  updateUser(id: ID!, name: String, lastName: String, password: String, admin: Boolean) : User 
+        @guard 
+        @can(ability: "isAdmin") 
+        @field(resolver: "UserGraph@updateUser")
+}
