@@ -18,6 +18,7 @@ class MovieResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'type' => $this->type,
+            'urlFile' => $this->urlFile,
             'genero' => new GenreCollection($this->genere),
             'actores' => new ActorCollection($this->actor)
         ];
